@@ -8,7 +8,7 @@ import java.util.List;
 public class InMemoryHistoryManager implements HistoryManager{
     private List<Task> history = new LinkedList<>();
 
-    // Класс узла двусвязного списка (обязательный по ТЗ отдельный класс)
+    // Класс узла двусвязного списка
     private static class Node {
         Task task;
         Node prev;
@@ -19,11 +19,11 @@ public class InMemoryHistoryManager implements HistoryManager{
         }
     }
 
-    // Голова и хвост нашего двусвязного списка
+    // Голова и хвост двусвязного списка
     private Node head;
     private Node tail;
 
-    // HashMap: id задачи -> узел списка (для удаления за O(1))
+    // HashMap: id задачи -> узел списка
     private final HashMap<Integer, Node> nodeMap = new HashMap<>();
 
     // linkLast добавляет задачу в конец списка и возвращает созданный узел
@@ -51,7 +51,7 @@ public class InMemoryHistoryManager implements HistoryManager{
         return tasks;
     }
 
-    // removeNode вырезает узел из списка за O(1)
+    // removeNode вырезает узел из списка
     private void removeNode(Node node) {
         if (node == null) {
             return;

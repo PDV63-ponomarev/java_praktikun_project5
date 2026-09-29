@@ -2,6 +2,7 @@ package methods;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -28,6 +29,7 @@ public class CreatTask {
     public HistoryManager getHistoryManager() {
         return historyManager;
     }
+
 
 
     public void creatingNewTask() {
@@ -69,7 +71,8 @@ public class CreatTask {
         System.out.println("Создание обычной задачи");
 
         TaskInputData data = createTaskData();
-        Task task = new Task(data.getName(), data.getDescription(), data.getStatus(), data.getId());
+        String type = "TASK";
+        Task task = new Task(data.getName(), data.getDescription(), data.getStatus(), data.getId(), type);
         tasks.put(task.getTaskID(), task);
 
         System.out.println("Простая задача успешно создана! ID: " + task.getTaskID());
@@ -79,7 +82,8 @@ public class CreatTask {
         System.out.println("Создание большой задачи");
 
         TaskInputData data = createTaskData();
-        TaskEpic epic = new TaskEpic(data.getName(), data.getDescription(), data.getStatus(), data.getId());
+        String type = "EPIC";
+        TaskEpic epic = new TaskEpic(data.getName(), data.getDescription(), data.getStatus(), data.getId(), type);
         epics.put(epic.getTaskID(), epic);
 
         System.out.println("Задача успешно создана! ID: " + epic.getTaskID());
@@ -108,14 +112,15 @@ public class CreatTask {
             return;
         }
         String epicName = selectedEpic.getTaskName();
-
+        String type = "SUBTASK";
         TaskInputData data = createTaskData();
         TaskSubtask subtask = new TaskSubtask(data.getName(),
                 data.getDescription(),
                 data.getStatus(),
                 data.getId(),
                 epicId,
-                epicName);
+                epicName,
+                type);
 
         subtasks.put(subtask.getTaskID(), subtask);
 
@@ -192,4 +197,13 @@ public class CreatTask {
             }
         }
     }
+
+    public List<Task> getAllTasks() {
+        List<Task> all = new ArrayList<>();
+        all.addAll(tasks.values());
+        all.addAll(epics.values());
+        all.addAll(subtasks.values());
+        return all;
+    }
+
 }

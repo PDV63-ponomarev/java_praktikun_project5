@@ -14,12 +14,14 @@ public class Task {
     protected  String taskDescription;
     protected  EnumStatus taskStatus;
     protected  int taskID;
+    protected String taskType;
 
-    public Task(String taskName, String taskDescription, EnumStatus status, int taskID) {
+    public Task(String taskName, String taskDescription, EnumStatus status, int taskID, String taskType) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStatus = status;
         this.taskID = taskID;
+        this.taskType = taskType;
     }
 
     public String getTaskName() {
@@ -38,6 +40,8 @@ public class Task {
         return taskID;
     }
 
+
+
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
@@ -49,6 +53,8 @@ public class Task {
     public void setTaskStatus(EnumStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
+
+
 
     @Override
     public String toString() {
@@ -63,8 +69,8 @@ public class Task {
 class TaskEpic extends Task{
     private List<Integer> subtaskIds;
 
-    public TaskEpic(String taskName, String taskDescription, EnumStatus status, int taskID) {
-        super(taskName, taskDescription, status, taskID);
+    public TaskEpic(String taskName, String taskDescription, EnumStatus status, int taskID, String taskType) {
+        super(taskName, taskDescription, status, taskID, taskType);
         this.subtaskIds = new ArrayList<>();
     }
 
@@ -127,8 +133,9 @@ class TaskSubtask extends Task{
     private int epicId;
     private String epicName;
 
-    public TaskSubtask(String taskName, String taskDescription, EnumStatus status, int taskID, int epicId, String epicName) {
-        super(taskName, taskDescription, status, taskID);
+    public TaskSubtask(String taskName, String taskDescription, EnumStatus status, int taskID,
+                       int epicId, String epicName, String taskType) {
+        super(taskName, taskDescription, status, taskID, taskType);
         this.epicId = epicId;
         this.epicName = epicName;
     }
