@@ -45,9 +45,18 @@ public class FileTask {
 
 
     static String historyToString(HistoryManager historyManager){
-        //!!!!!!!
-        String idTask = "";
-        return idTask;
+
+        StringBuilder sb = new StringBuilder();
+
+        List<Task> history = historyManager.getHistory();
+
+        for (int i = 0; i < history.size(); i++){
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(history.get(i).getTaskID());
+        }
+        return sb.toString();
     }
 
 

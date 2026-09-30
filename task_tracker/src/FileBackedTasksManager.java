@@ -1,8 +1,12 @@
-import java.io.FileWriter;
+import methods.CreatTask;
+import methods.FileTask;
+
 import java.io.IOException;
-import java.io.Writer;
+
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
+
+
 
     public FileBackedTasksManager() {
         super();
@@ -56,7 +60,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public void save(){
-
+        try {
+            FileTask.writeFile();
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка сохранения в файл", e);
+        }
     }
 
 
