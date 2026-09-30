@@ -10,7 +10,7 @@ import methods.*;
 
 public class FileTask {
 
-    protected static CreatTask createTask;
+    public static CreatTask createTask;
     protected static HistoryManager historyManager;
 
 
@@ -92,11 +92,11 @@ public class FileTask {
 //        return manager;
 //    }
 
-    private static Task findTaskById(CreatTask ct, int id) {
-        if (ct.getTasks().containsKey(id))    return ct.getTasks().get(id);
-        if (ct.getEpics().containsKey(id))    return ct.getEpics().get(id);
-        return ct.getSubtasks().get(id);
-    }
+//    private static Task findTaskById(CreatTask ct, int id) {
+//        if (ct.getTasks().containsKey(id))    return ct.getTasks().get(id);
+//        if (ct.getEpics().containsKey(id))    return ct.getEpics().get(id);
+//        return ct.getSubtasks().get(id);
+//    }
 
     static String writeTask(Task task){
         String epicId = "";
@@ -111,18 +111,19 @@ public class FileTask {
         String[] f = value.split(",", -1); // -1: не выбрасывать пустые поля в конце
 
         int id = Integer.parseInt(f[0].trim());
-        String type = f[1].trim();
+//        String typeString = f[1].trim();
+        TaskType type = TaskType.valueOf(f[1].trim());
         String name = f[2].trim();
         EnumStatus status = EnumStatus.valueOf(f[3].trim());
         String description = f[4].trim();
         String epicField   = f[5].trim();
 
         switch (type) {
-            case "TASK":
+            case TaskType.TASK:
                 return new Task(name, description, status, id, type);
-            case "EPIC":
+            case TaskType.EPIC:
                 return new TaskEpic(name, description, status, id, type);
-            case "SUBTASK":
+            case TaskType.SUBTASK:
                 int epicId = Integer.parseInt(epicField);
                 TaskEpic epic = createTask.getEpics().get(epicId);
                 String epicName = (epic != null) ? epic.getTaskName() : "";

@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
-import static methods.FileTask.findTaskById;
+import static methods.Task.findTaskById;
 
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
