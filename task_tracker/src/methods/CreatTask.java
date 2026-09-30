@@ -71,8 +71,9 @@ public class CreatTask {
         System.out.println("Создание обычной задачи");
 
         TaskInputData data = createTaskData();
-        String type = "TASK";
-        Task task = new Task(data.getName(), data.getDescription(), data.getStatus(), data.getId(), type);
+
+        Task task = new Task(data.getName(), data.getDescription(), data.getStatus(), data.getId(),
+                TaskType.TASK);
         tasks.put(task.getTaskID(), task);
 
         System.out.println("Простая задача успешно создана! ID: " + task.getTaskID());
@@ -82,8 +83,9 @@ public class CreatTask {
         System.out.println("Создание большой задачи");
 
         TaskInputData data = createTaskData();
-        String type = "EPIC";
-        TaskEpic epic = new TaskEpic(data.getName(), data.getDescription(), data.getStatus(), data.getId(), type);
+
+        TaskEpic epic = new TaskEpic(data.getName(), data.getDescription(), data.getStatus(), data.getId(),
+                TaskType.EPIC);
         epics.put(epic.getTaskID(), epic);
 
         System.out.println("Задача успешно создана! ID: " + epic.getTaskID());
@@ -112,7 +114,7 @@ public class CreatTask {
             return;
         }
         String epicName = selectedEpic.getTaskName();
-        String type = "SUBTASK";
+
         TaskInputData data = createTaskData();
         TaskSubtask subtask = new TaskSubtask(data.getName(),
                 data.getDescription(),
@@ -120,7 +122,7 @@ public class CreatTask {
                 data.getId(),
                 epicId,
                 epicName,
-                type);
+                TaskType.SUBTASK);
 
         subtasks.put(subtask.getTaskID(), subtask);
 
@@ -204,6 +206,10 @@ public class CreatTask {
         all.addAll(epics.values());
         all.addAll(subtasks.values());
         return all;
+    }
+
+    public void setNextId(int nextId) {
+        this.nextId = nextId;
     }
 
 }

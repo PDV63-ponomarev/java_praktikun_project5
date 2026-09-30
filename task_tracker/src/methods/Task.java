@@ -9,19 +9,26 @@ enum EnumStatus{
     DONE
 }
 
+enum TaskType{
+    TASK,
+    EPIC,
+    SUBTASK }
+
+
 public class Task {
     protected  String taskName;
     protected  String taskDescription;
     protected  EnumStatus taskStatus;
     protected  int taskID;
-    protected String taskType;
+    protected TaskType taskType;
 
-    public Task(String taskName, String taskDescription, EnumStatus status, int taskID, String taskType) {
+    public Task(String taskName, String taskDescription, EnumStatus status, int taskID, TaskType taskType) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStatus = status;
         this.taskID = taskID;
         this.taskType = taskType;
+
     }
 
     public String getTaskName() {
@@ -69,7 +76,7 @@ public class Task {
 class TaskEpic extends Task{
     private List<Integer> subtaskIds;
 
-    public TaskEpic(String taskName, String taskDescription, EnumStatus status, int taskID, String taskType) {
+    public TaskEpic(String taskName, String taskDescription, EnumStatus status, int taskID, TaskType taskType) {
         super(taskName, taskDescription, status, taskID, taskType);
         this.subtaskIds = new ArrayList<>();
     }
@@ -134,7 +141,7 @@ class TaskSubtask extends Task{
     private String epicName;
 
     public TaskSubtask(String taskName, String taskDescription, EnumStatus status, int taskID,
-                       int epicId, String epicName, String taskType) {
+                       int epicId, String epicName, TaskType taskType) {
         super(taskName, taskDescription, status, taskID, taskType);
         this.epicId = epicId;
         this.epicName = epicName;

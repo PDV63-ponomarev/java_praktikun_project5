@@ -1,16 +1,92 @@
-import methods.CreatTask;
-import methods.FileTask;
+import methods.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.List;
+
+import static methods.FileTask.findTaskById;
 
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
+    private final File file;
+    protected static CreatTask createTask;
+    private final FileTask fileTask = new FileTask(creatTask);
 
-
-    public FileBackedTasksManager() {
+    public FileBackedTasksManager(File file) {
         super();
+        this.file = file;
     }
+
+//    public static FileBackedTasksManager loadFromFile(File file) {
+//        FileBackedTasksManager manager = new FileBackedTasksManager(file);
+//        if (!file.exists() || file.length() == 0) {
+//            return manager; // файла нет — стартуем с пустого менеджера
+//        }
+//        // прочитать файл, разобрать строки через fromString,
+//        // заполнить creatTask.getTasks()/getEpics()/getSubtasks(),
+//        // восстановить историю, обновить nextId
+//        return manager;
+//    }
+
+public static FileBackedTasksManager loadFromFile(File file) {
+    FileBackedTasksManager manager = new FileBackedTasksManager(file);
+
+    if (!file.exists() || file.length() == 0) {
+        return manager; // файла нет — стартуем с пустым менеджером
+    }
+
+    FileTask.createTask = manager.creatTask; // см. примечание ниже
+
+    List<String> lines;
+    try {
+        lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+    } catch (IOException e) {
+        throw new ManagerSaveException("Ошибка загрузки из файла", e);
+    }
+
+    int cursor = 1;  // строка 0 — шапка id,type,name,...
+    int maxId = 0;
+
+    // блок задач: всё до первой пустой строки
+    while (cursor < lines.size() && !lines.get(cursor).isBlank()) {
+        Task task = FileTask.fromString(lines.get(cursor));
+
+        if (task instanceof TaskEpic) {
+            manager.creatTask.getEpics().put(task.getTaskID(), (TaskEpic) task);
+        } else if (task instanceof TaskSubtask) {
+            TaskSubtask sub = (TaskSubtask) task;
+            manager.creatTask.getSubtasks().put(sub.getTaskID(), sub);
+            // эпик уже восстановлен (в файле эпики идут раньше) — восстанавливаем связь
+            TaskEpic epic = manager.creatTask.getEpics().get(sub.getEpicId());
+            if (epic != null) {
+                epic.addSubtaskId(sub.getTaskID());
+            }
+        } else {
+            manager.creatTask.getTasks().put(task.getTaskID(), task);
+        }
+
+        maxId = Math.max(maxId, task.getTaskID());
+        cursor++;
+    }
+
+    manager.creatTask.setNextId(maxId + 1); // чтобы новые ID не пересеклись со старыми
+
+    // блок истории: строка после пустой
+    cursor++;
+    if (cursor < lines.size()) {
+        for (int id : FileTask.historyFromString(lines.get(cursor))) {
+            Task task = findTaskById(manager.creatTask, id);
+            if (task != null) {
+                manager.creatTask.getHistoryManager().add(task);
+            }
+        }
+    }
+
+    return manager;
+}
 
     @Override
     public void showAllTasks() {
@@ -20,6 +96,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     @Override
     public void deleteAllTasks() {
         super.deleteAllTasks();
+        save();
     }
 
     @Override
@@ -42,6 +119,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     @Override
     public void deleteOneTask() {
         super.deleteOneTask();
+        save();
     }
 
     @Override

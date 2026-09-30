@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private CreatTask creatTask;
+    protected CreatTask creatTask;
     private ShowTask showTask;
     private DeleteTask deleteTask;
     private UpdateTask updateTask;
