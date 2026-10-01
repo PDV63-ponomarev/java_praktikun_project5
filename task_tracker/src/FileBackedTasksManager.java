@@ -6,30 +6,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
-import static methods.Task.findTaskById;
-
-
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private final File file;
-    protected static CreatTask createTask;
-    private final FileTask fileTask = new FileTask(creatTask);
 
     public FileBackedTasksManager(File file) {
         super();
         this.file = file;
     }
-
-//    public static FileBackedTasksManager loadFromFile(File file) {
-//        FileBackedTasksManager manager = new FileBackedTasksManager(file);
-//        if (!file.exists() || file.length() == 0) {
-//            return manager; // файла нет — стартуем с пустого менеджера
-//        }
-//        // прочитать файл, разобрать строки через fromString,
-//        // заполнить creatTask.getTasks()/getEpics()/getSubtasks(),
-//        // восстановить историю, обновить nextId
-//        return manager;
-//    }
 
 public static FileBackedTasksManager loadFromFile(File file) {
     FileBackedTasksManager manager = new FileBackedTasksManager(file);
@@ -114,6 +98,7 @@ public static FileBackedTasksManager loadFromFile(File file) {
     @Override
     public void managerUpdateTask() {
         super.managerUpdateTask();
+        save();
     }
 
     @Override
@@ -139,14 +124,15 @@ public static FileBackedTasksManager loadFromFile(File file) {
 
     public void save(){
         try {
-            FileTask.writeFile();
+            FileTask.writeFile(file, creatTask);
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения в файл", e);
         }
     }
 
-
-
-
-
+    public static Task findTaskById(CreatTask ct, int id) {
+        if (ct.getTasks().containsKey(id))    return ct.getTasks().get(id);
+        if (ct.getEpics().containsKey(id))    return ct.getEpics().get(id);
+        return ct.getSubtasks().get(id);
+    }
 }

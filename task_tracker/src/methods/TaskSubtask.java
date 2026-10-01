@@ -1,6 +1,5 @@
 package methods;
 
-
 public class TaskSubtask extends Task{
     private int epicId;
     private String epicName;
